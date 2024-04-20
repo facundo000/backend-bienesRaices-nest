@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateVendedoreDto } from './dto/create-vendedore.dto';
 import { UpdateVendedoreDto } from './dto/update-vendedore.dto';
 import { Vendedore } from './entities/vendedore.entity';
+import { isUUID } from 'class-validator';
 
 @Injectable()
 export class VendedoresService {
@@ -33,16 +34,37 @@ export class VendedoresService {
     return vendedores;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} vendedore`;
+  async findOne(id: string) {
+
+    let vendedor: Vendedore;
+
+    if( isUUID(id) ){
+      vendedor = await this.vendedorRepository.findOneBy({ id : id });
+    // } else {
+      
+    //   const queryBuilder = this.vendedorRepository.createQueryBuilder('vendedores');
+    //   const idLower = id.toLocaleLowerCase().trim();
+
+      // vendedor = await queryBuilder
+      // .where(' UPPER(nombre) = :nombre or apellido = :apellido ', {
+      //   nombre: idLower,
+      //   apellido: idLower
+      // })
+      // .getOne();
+    }
+
+    if(!vendedor)
+      throw new BadRequestException(`Vendedor con id ${id} no encontrado`);
+    
+
+    return vendedor;
   }
 
-  update(id: number, updateVendedoreDto: UpdateVendedoreDto) {
-    return `This action updates a #${id} vendedore`;
-  }
+  async remove(id: string) {
+    const vendedor = await this.findOne(id);
+    await this.vendedorRepository.remove(vendedor);
 
-  remove(id: number) {
-    return `This action removes a #${id} vendedore`;
+    return {eliminado: true};
   }
 
   private handleDBExceptions(error: any) {
