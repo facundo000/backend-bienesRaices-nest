@@ -19,16 +19,16 @@ export class PropiedadesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.propiedadesService.findOne(+id);
+    return this.propiedadesService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updatePropiedadeDto: UpdatePropiedadeDto) {
-    return this.propiedadesService.update(+id, updatePropiedadeDto);
+    return this.propiedadesService.update(id, updatePropiedadeDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.propiedadesService.remove(+id);
+    return this.propiedadesService.remove(id);
   }
 }

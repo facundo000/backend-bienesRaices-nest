@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { CreateVendedoreDto } from './dto/create-vendedore.dto';
-import { UpdateVendedoreDto } from './dto/update-vendedore.dto';
 import { Vendedore } from './entities/vendedore.entity';
 import { isUUID } from 'class-validator';
 

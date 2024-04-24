@@ -1,5 +1,4 @@
-import { UUID } from "crypto";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Propiedade {
@@ -7,10 +6,10 @@ export class Propiedade {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column('text', { unique: true })
-    slug: string;
+    @Column('text', { nullable: true })
+    slug?: string;
 
-    @Column('text', { unique: true })
+    @Column('text')
     titulo: string;
 
     @Column('numeric', { default: 0 })
@@ -28,12 +27,12 @@ export class Propiedade {
     @Column('int', { default: 0 })
     estacionamiento: number;
 
-    @Column('date', { nullable: true })
+    @CreateDateColumn({ type: 'date' })
     creado: Date;
 
-    @Column('text', { nullable: true })
-    imagen: string[];
+    // @Column('text', { nullable: true })
+    // imagen: string[];
 
-    @Column('uuid', { nullable: true })
-    vendedores_id: string;
+    // @Column('uuid', { nullable: true })
+    // vendedores_id: string;
 }
