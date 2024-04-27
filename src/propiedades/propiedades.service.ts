@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
-import { CreatePropiedadeDto } from './dto/create-propiedade.dto';
-import { UpdatePropiedadeDto } from './dto/update-propiedade.dto';
-import { Propiedade } from './entities/propiedade.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { isUUID } from 'class-validator';
+import { CreatePropiedadeDto } from './dto/create-propiedade.dto';
+import { UpdatePropiedadeDto } from './dto/update-propiedade.dto';
+import { PropiedadImage, Propiedade } from './entities';
 
 @Injectable()
 
@@ -14,20 +14,32 @@ export class PropiedadesService {
   constructor(
     @InjectRepository(Propiedade)
     private readonly propiedadesRepository: Repository<Propiedade>,
+
+    @InjectRepository(PropiedadImage)
+    private readonly propiedadeImageRepository: Repository<PropiedadImage>
   ) { }
   async create(createPropiedadeDto: CreatePropiedadeDto) {
     try {
-      const propiedade = this.propiedadesRepository.create(createPropiedadeDto);
+      const { imagen = [], ...propiedades } = createPropiedadeDto;
+
+      const propiedade = this.propiedadesRepository.create({
+        ...createPropiedadeDto,
+        imagen: imagen.map( img => this.propiedadeImageRepository.create({ url: img }) )
+    });
       await this.propiedadesRepository.save(propiedade);
       
-      return propiedade;
+      return {...propiedade, imagen};
     } catch (error) {
       this.handleDBExceptions(error);
     }
   }
 
   findAll() {
-    const propiedades = this.propiedadesRepository.find();
+    const propiedades = this.propiedadesRepository.find({
+      relations: {
+        imagen: true
+      }
+    });
     return propiedades;
   }
 
@@ -47,7 +59,8 @@ export class PropiedadesService {
   async update(id: string, updatePropiedadeDto: UpdatePropiedadeDto) {
     const propiedade = await this.propiedadesRepository.preload({
       id: id,
-      ...updatePropiedadeDto
+      ...updatePropiedadeDto,
+      imagen: []
     });
     if(!propiedade) throw new BadRequestException(`Propiedad con id ${id} no encontrada`);
     

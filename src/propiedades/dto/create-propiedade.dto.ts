@@ -1,5 +1,4 @@
-import { IsArray, IsDate, IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, ValidationTypes } from "class-validator";
-import { CreateDateColumn } from "typeorm";
+import { IsArray, IsInt, IsNumber, IsOptional, IsPositive, IsString } from "class-validator";
 
 
 export class CreatePropiedadeDto {
@@ -32,9 +31,11 @@ export class CreatePropiedadeDto {
     @IsPositive()
     estacionamiento: number;
 
-    // @IsString({ each: true })
-    // @IsArray()
-    // imagen: string[];
+    @IsString({ each: true })
+    @IsArray()
+    @IsOptional()
+    imagen?: string[];
 
-    // vendedores_id: string[];
+    // @IsString()
+    // vendedor: string;
 }

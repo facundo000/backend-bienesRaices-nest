@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Propiedade } from "src/propiedades/entities";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Vendedore {
@@ -14,4 +15,11 @@ export class Vendedore {
 
     @Column('text', { unique: true })
     telefono: string;
+
+    // @OneToMany(
+    //     () => Propiedade,
+    //     (Propiedade) => Propiedade.titulo,
+    //     { cascade: true }
+    // )
+    // propiedades?: Propiedade[];
 }

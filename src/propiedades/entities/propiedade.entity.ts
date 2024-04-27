@@ -1,4 +1,6 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { PropiedadImage } from ".";
+import { Vendedore } from "src/vendedores/entities/vendedore.entity";
 
 @Entity()
 export class Propiedade {
@@ -30,9 +32,16 @@ export class Propiedade {
     @CreateDateColumn({ type: 'date' })
     creado: Date;
 
-    // @Column('text', { nullable: true })
-    // imagen: string[];
+    @OneToMany(
+        () => PropiedadImage,
+        (propiedadImage) => propiedadImage.propiedad,
+        { cascade: true }
+    )
+    imagen?: PropiedadImage[];
 
-    // @Column('uuid', { nullable: true })
-    // vendedores_id: string;
+    // @ManyToOne(
+    //     () => Vendedore,
+    //     (vendedore) => vendedore.propiedades,
+    // )
+    // vendedor: Vendedore;
 }
