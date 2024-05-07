@@ -12,7 +12,8 @@ export class PropiedadImage {
 
     @ManyToOne(
         () => Propiedade,
-        (propiedade) => propiedade.imagen
+        (propiedade) => propiedade.imagen,
+        { onDelete: 'CASCADE' }
     )
     propiedad: Propiedade
 }
