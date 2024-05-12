@@ -36,6 +36,6 @@ export class CreatePropiedadeDto {
     @IsOptional()
     imagen?: string[];
 
-    // @IsString()
-    // vendedor: string;
+    @IsString()
+    vendedorId?: string;
 }

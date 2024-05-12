@@ -39,9 +39,9 @@ export class Propiedade {
     )
     imagen?: PropiedadImage[];
 
-    // @ManyToOne(
-    //     () => Vendedore,
-    //     (vendedore) => vendedore.propiedades,
-    // )
-    // vendedor: Vendedore;
+    @ManyToOne(
+        () => Vendedore,
+        (vendedore) => vendedore.propiedades,
+    )
+    vendedor?: Vendedore;
 }

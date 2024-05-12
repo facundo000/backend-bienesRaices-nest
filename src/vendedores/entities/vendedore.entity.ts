@@ -16,10 +16,10 @@ export class Vendedore {
     @Column('text', { unique: true })
     telefono: string;
 
-    // @OneToMany(
-    //     () => Propiedade,
-    //     (Propiedade) => Propiedade.titulo,
-    //     { cascade: true }
-    // )
-    // propiedades?: Propiedade[];
+    @OneToMany(
+        () => Propiedade,
+        (Propiedade) => Propiedade.titulo,
+        { cascade: true }
+    )
+    propiedades?: Propiedade[];
 }

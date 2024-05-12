@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { PropiedadesModule } from './propiedades/propiedades.module';
 import { VendedoresModule } from './vendedores/vendedores.module';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { VendedoresModule } from './vendedores/vendedores.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
+    SeedModule,
   ],
   controllers: [],
   providers: [],

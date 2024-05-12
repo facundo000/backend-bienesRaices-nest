@@ -11,6 +11,10 @@ import { Vendedore } from 'src/vendedores/entities/vendedore.entity';
   providers: [PropiedadesService],
   imports: [
     TypeOrmModule.forFeature([ Propiedade, PropiedadImage, Vendedore ])
+  ],
+  exports: [
+    PropiedadesService,
+    TypeOrmModule,
   ]
 })
 export class PropiedadesModule {}
