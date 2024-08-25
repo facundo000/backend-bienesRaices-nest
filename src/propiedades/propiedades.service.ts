@@ -1,10 +1,14 @@
 import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import { DataSource, Repository } from 'typeorm';
 import { isUUID } from 'class-validator';
+
 import { CreatePropiedadeDto } from './dto/create-propiedade.dto';
 import { UpdatePropiedadeDto } from './dto/update-propiedade.dto';
+
 import { PropiedadImage, Propiedade } from './entities';
+import { User } from '../auth/entities/user.entity';
 
 @Injectable()
 
@@ -21,13 +25,14 @@ export class PropiedadesService {
     private readonly dataSoucrce: DataSource,
 
   ) { }
-  async create(createPropiedadeDto: CreatePropiedadeDto) {
+  async create(createPropiedadeDto: CreatePropiedadeDto, user: User) {
     try {
       const { imagen = [], ...propiedades } = createPropiedadeDto;
 
       const propiedade = this.propiedadesRepository.create({
         ...createPropiedadeDto,
-        imagen: imagen.map( img => this.propiedadeImageRepository.create({ url: img }) )
+        imagen: imagen.map( img => this.propiedadeImageRepository.create({ url: img }) ),
+        user,
     });
       await this.propiedadesRepository.save(propiedade);
       
@@ -52,9 +57,7 @@ export class PropiedadesService {
     if( isUUID(id) ){
       propiedade = await this.propiedadesRepository.findOneBy({ id : id });
     }
-    // if (!propiedade) {
-    //   throw new BadRequestException(`Propiedaded con id ${id} no encontrada`);
-    // }
+    
     else{
       const queryBuilder = this.propiedadesRepository.createQueryBuilder('prop');
       propiedade = await queryBuilder.where('UPPER(titulo) =:title or slug =:slug', { 
@@ -62,6 +65,9 @@ export class PropiedadesService {
       })
       .leftJoinAndSelect('prop.imagen', 'imagen')
       .getOne();
+    }
+    if (!propiedade) {
+      throw new BadRequestException(`Propiedaded con id ${id} no encontrada`);
     }
 
     return propiedade;
@@ -76,7 +82,7 @@ export class PropiedadesService {
     }
   }
 
-  async update(id: string, updatePropiedadeDto: UpdatePropiedadeDto) {
+  async update(id: string, updatePropiedadeDto: UpdatePropiedadeDto, user: User) {
     const { imagen, ...toUpdate } = updatePropiedadeDto;
 
     const propiedade = await this.propiedadesRepository.preload({ id: id, ...toUpdate });
@@ -98,6 +104,7 @@ export class PropiedadesService {
       }
 
       // await this.propiedadesRepository.save(propiedade);
+      propiedade.user = user
       await queryRunner.manager.save( propiedade );
 
       await queryRunner.commitTransaction();

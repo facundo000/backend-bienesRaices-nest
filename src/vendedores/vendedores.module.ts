@@ -3,13 +3,16 @@ import { VendedoresService } from './vendedores.service';
 import { VendedoresController } from './vendedores.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Vendedore } from './entities/vendedore.entity';
-import { Propiedade } from 'src/propiedades/entities';
+import { Propiedade, PropiedadImage } from 'src/propiedades/entities';
+import { PropiedadesService } from 'src/propiedades/propiedades.service';
+import { PropiedadesModule } from '../propiedades/propiedades.module';
 
 @Module({
   controllers: [VendedoresController],
   providers: [VendedoresService],
   imports: [
-    TypeOrmModule.forFeature([ Vendedore, Propiedade ])
+    TypeOrmModule.forFeature([ Vendedore, Propiedade ]),
+    PropiedadesModule
   ]
 })
 export class VendedoresModule {}

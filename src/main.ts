@@ -14,7 +14,15 @@ async function bootstrap() {
     forbidNonWhitelisted: true,
     })
    );
-
+   app.enableCors(
+    {
+      "origin": "*",
+      "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+      "preflightContinue": false,
+      "optionsSuccessStatus": 204
+    }
+   );
+   
    await app.listen(process.env.PORT);
    logger.log(`App running on port ${ process.env.PORT }`)
 }

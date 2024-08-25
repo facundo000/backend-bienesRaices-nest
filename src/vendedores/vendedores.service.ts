@@ -1,10 +1,11 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { CreateVendedoreDto } from './dto/create-vendedore.dto';
 import { Vendedore } from './entities/vendedore.entity';
 import { isUUID } from 'class-validator';
+import { PropiedadesService } from 'src/propiedades/propiedades.service';
 
 @Injectable()
 export class VendedoresService {
@@ -12,8 +13,10 @@ export class VendedoresService {
   private readonly logger = new Logger('VendedoresService')
   constructor(
   @InjectRepository(Vendedore)
-  private readonly vendedorRepository: Repository<Vendedore>
+  private readonly vendedorRepository: Repository<Vendedore>,
+  private readonly propiedadService: PropiedadesService
   ) {}
+
   async create(createVendedoreDto: CreateVendedoreDto) {
     
     try {
@@ -27,6 +30,22 @@ export class VendedoresService {
       this.handleDBExceptions(error);
     }
   }
+  // async create(createVendedoreDto: CreateVendedoreDto) {
+  //   const vendedor = this.vendedorRepository.create(createVendedoreDto);
+
+  //   if (createVendedoreDto.propiedadId) {
+  //       const propiedad = await this.propiedadService.findOne(createVendedoreDto.propiedadId);
+  //       if (propiedad) {
+  //           vendedor.propiedades = [propiedad];
+  //       } else {
+  //           throw new NotFoundException('Propiedad no encontrada');
+  //       }
+  //   }
+
+    // Guardar el nuevo vendedor en la base de datos
+//     const nuevoVendedor = await this.vendedorRepository.save(vendedor);
+//     return nuevoVendedor;
+// }
 
   findAll() {
     const vendedores = this.vendedorRepository.find();

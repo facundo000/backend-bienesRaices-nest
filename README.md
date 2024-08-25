@@ -18,5 +18,5 @@ npm run start:dev
 ```
 5. Ejecutar seed para llenar datos en BD
 ```
-http://localhost:3000/api/seed
+http://localhost:3000/api/v1/seed
 ```

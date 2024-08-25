@@ -4,8 +4,8 @@ import { Propiedade } from "./index";
 @Entity()
 export class PropiedadImage {
 
-    @PrimaryGeneratedColumn()
-    id: number;
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
     @Column('text')
     url: string;

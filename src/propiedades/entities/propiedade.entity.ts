@@ -1,6 +1,7 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { PropiedadImage } from ".";
 import { Vendedore } from "src/vendedores/entities/vendedore.entity";
+import { User } from "src/auth/entities/user.entity";
 
 @Entity()
 export class Propiedade {
@@ -35,13 +36,17 @@ export class Propiedade {
     @OneToMany(
         () => PropiedadImage,
         (propiedadImage) => propiedadImage.propiedad,
-        { cascade: true }
+        { 
+            cascade: true,
+            eager: true
+        }
     )
     imagen?: PropiedadImage[];
 
     @ManyToOne(
-        () => Vendedore,
-        (vendedore) => vendedore.propiedades,
+        () => User,
+        (user) => user.propiedad,
+        { eager: true }
     )
-    vendedor?: Vendedore;
+    user: User;
 }

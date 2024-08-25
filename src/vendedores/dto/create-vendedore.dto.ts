@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, Matches } from "class-validator";
+import { IsNotEmpty, IsString, IsUUID, Matches } from "class-validator";
 
 
 export class CreateVendedoreDto {
@@ -15,4 +15,7 @@ export class CreateVendedoreDto {
     @IsNotEmpty({ message: 'El teléfono es obligatorio' })
     @Matches(/^[0-9]{8}$/, { message: 'El teléfono debe tener exactamente 8 dígitos numéricos' })
     telefono: string;
+
+    @IsUUID()
+    propiedadId?: string
 }

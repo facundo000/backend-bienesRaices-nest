@@ -1,15 +1,22 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 import { PropiedadesModule } from './propiedades/propiedades.module';
 import { VendedoresModule } from './vendedores/vendedores.module';
+import { FilesModule } from './files/files.module';
 import { SeedModule } from './seed/seed.module';
+
+import { join } from 'path';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
     PropiedadesModule, 
-    VendedoresModule, 
+    VendedoresModule,
+    SeedModule,
+
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -21,7 +28,14 @@ import { SeedModule } from './seed/seed.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
-    SeedModule,
+
+    ServeStaticModule.forRoot({ 
+      rootPath: join(__dirname,'..','public'), 
+    }),
+    
+    FilesModule,
+    
+    AuthModule,
   ],
   controllers: [],
   providers: [],
