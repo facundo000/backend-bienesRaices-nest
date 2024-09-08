@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Propiedade } from "./index";
 
 @Entity()
@@ -10,7 +10,7 @@ export class PropiedadImage {
     @Column('text')
     url: string;
 
-    @ManyToOne(
+    @OneToOne(
         () => Propiedade,
         (propiedade) => propiedade.imagen,
         { onDelete: 'CASCADE' }

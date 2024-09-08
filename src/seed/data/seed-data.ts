@@ -1,3 +1,6 @@
+import * as bcrypt from 'bcrypt';
+
+
 interface SeedPropiedades {
     descripcion: string;
     habitaciones:  number;
@@ -27,7 +30,7 @@ export const initialData: SeedData = {
     users: [
         {
             email: "jKuZ7@example.com",
-            contrasenia: "123456",
+            contrasenia: bcrypt.hashSync('Abc123456', 10),
             nombre: "Admin",
             apellido: "Admin",
             telefono: "1234567890",
@@ -35,7 +38,7 @@ export const initialData: SeedData = {
         },
         {
             email: "jKus7@google.com",
-            contrasenia: "123456",
+            contrasenia: bcrypt.hashSync('Abc123456', 10),
             nombre: "Test",
             apellido: "2",
             telefono: "1234567891",

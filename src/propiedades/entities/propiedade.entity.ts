@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { PropiedadImage } from ".";
 import { Vendedore } from "src/vendedores/entities/vendedore.entity";
 import { User } from "src/auth/entities/user.entity";
@@ -33,7 +33,7 @@ export class Propiedade {
     @CreateDateColumn({ type: 'date' })
     creado: Date;
 
-    @OneToMany(
+    @OneToOne(
         () => PropiedadImage,
         (propiedadImage) => propiedadImage.propiedad,
         { 
