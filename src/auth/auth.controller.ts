@@ -38,48 +38,48 @@ export class AuthController {
     return this.authService.checkAuthStatus( user )
   }
 
-  @Get('private')
-  @UseGuards(AuthGuard())
-  testingPrivateRoute(
-    @Req() request: Express.Request,
-    @GetUser() user: User,
-    @GetUser('email') userEmail: string,
+  // @Get('private')
+  // @UseGuards(AuthGuard())
+  // testingPrivateRoute(
+  //   @Req() request: Express.Request,
+  //   @GetUser() user: User,
+  //   @GetUser('email') userEmail: string,
 
-    @GetRawHeaders() rawHeaders: string[],    
-  ) {
+  //   @GetRawHeaders() rawHeaders: string[],    
+  // ) {
 
-    return {
-      ok: true,
-      message: 'en privado',
-      user,
-      userEmail,
-      rawHeaders,
-    }
-  }
+  //   return {
+  //     ok: true,
+  //     message: 'en privado',
+  //     user,
+  //     userEmail,
+  //     rawHeaders,
+  //   }
+  // }
 
-  @Get('private1')
-  @SetMetadata('roles', ['admin', 'super-user'])
-  @UseGuards(AuthGuard(), UserRoleGuard)
-  privateRoute2(
-    @GetUser() user: User,
-  ) {
-    return {
-      ok: true,
-      user
-    }
-  }
-
-  // @RoleProtected( ValidRoles.SUPERUSER, ValidRoles.ADMIN )
+  // @Get('private1')
+  // @SetMetadata('roles', ['admin', 'super-user'])
   // @UseGuards(AuthGuard(), UserRoleGuard)
-  @Get('private2')
-  @Auth( ValidRoles.ADMIN, ValidRoles.SUPERUSER )
-  privateRoute3(
-    @GetUser() user: User,
-  ) {
-    return {
-      ok: true,
-      user
-    }
-  }
+  // privateRoute2(
+  //   @GetUser() user: User,
+  // ) {
+  //   return {
+  //     ok: true,
+  //     user
+  //   }
+  // }
+
+  // // @RoleProtected( ValidRoles.SUPERUSER, ValidRoles.ADMIN )
+  // // @UseGuards(AuthGuard(), UserRoleGuard)
+  // @Get('private2')
+  // @Auth( ValidRoles.ADMIN, ValidRoles.SUPERUSER )
+  // privateRoute3(
+  //   @GetUser() user: User,
+  // ) {
+  //   return {
+  //     ok: true,
+  //     user
+  //   }
+  // }
 
 }
