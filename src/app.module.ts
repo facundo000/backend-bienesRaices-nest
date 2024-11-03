@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ServeStaticModule } from '@nestjs/serve-static';
 
 import { PropiedadesModule } from './propiedades/propiedades.module';
-import { VendedoresModule } from './vendedores/vendedores.module';
 import { FilesModule } from './files/files.module';
 import { SeedModule } from './seed/seed.module';
 
@@ -14,7 +13,6 @@ import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     PropiedadesModule, 
-    VendedoresModule,
     SeedModule,
 
     ConfigModule.forRoot(),

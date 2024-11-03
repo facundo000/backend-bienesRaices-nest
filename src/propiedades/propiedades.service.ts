@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { DataSource, Repository } from 'typeorm';
@@ -9,6 +9,8 @@ import { UpdatePropiedadeDto } from './dto/update-propiedade.dto';
 
 import { PropiedadImage, Propiedade } from './entities';
 import { User } from '../auth/entities/user.entity';
+import { ValidRoles } from 'src/auth/interfaces';
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 
@@ -27,12 +29,18 @@ export class PropiedadesService {
   ) { }
   async create(createPropiedadeDto: CreatePropiedadeDto, user: User) {
     try {
-      const { imagen = [], ...propiedades } = createPropiedadeDto;
+      const { imagen, ...propiedades } = createPropiedadeDto;
 
-      const propiedade = this.propiedadesRepository.create({
-        ...createPropiedadeDto,
-        imagen: imagen.map( img => this.propiedadeImageRepository.create({ url: img }) ),
-        user,
+    let propiedadImage: PropiedadImage | undefined;
+    if (imagen) {
+      propiedadImage = this.propiedadeImageRepository.create({ url: imagen });
+      await this.propiedadeImageRepository.save(propiedadImage);
+    }
+
+    const propiedade = this.propiedadesRepository.create({
+      ...propiedades,
+      imagen: propiedadImage, // Asignar la imagen creada
+      user,
     });
       await this.propiedadesRepository.save(propiedade);
       
@@ -74,52 +82,47 @@ export class PropiedadesService {
   }
 
   async findOnePlain(id: string) {
-    const { imagen = [], ...rest } = await this.findOne(id);
+    const { imagen, ...rest } = await this.findOne(id);
 
     return {
       ...rest,
-      imagen: imagen.map( img => img.url ),
+      imagen: imagen?.url
     }
   }
 
   async update(id: string, updatePropiedadeDto: UpdatePropiedadeDto, user: User) {
-    const { imagen, ...toUpdate } = updatePropiedadeDto;
+    const { imagen, ...toUpdate } = updatePropiedadeDto;    
 
-    const propiedade = await this.propiedadesRepository.preload({ id: id, ...toUpdate });
+    const propiedade = await this.propiedadesRepository.findOne({
+      where: { id },
+      relations: ['user'],
+    });
 
-    if(!propiedade) throw new BadRequestException(`Propiedad con id ${id} no encontrada`);
-    // Create Query runner
-
-    const queryRunner = this.dataSoucrce.createQueryRunner();
-
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-
-    try {
-      if(imagen){
-        await queryRunner.manager.delete(PropiedadImage, { propiedad: { id } });
-
-        propiedade.imagen = imagen.map( img => this.propiedadeImageRepository.create({ url: img }) );
-      }
-
-      // await this.propiedadesRepository.save(propiedade);
-      propiedade.user = user
-      await queryRunner.manager.save( propiedade );
-
-      await queryRunner.commitTransaction();
-      await queryRunner.release();
-      
-      // return propiedade;
-      return this.findOnePlain(id);
-
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      await queryRunner.release();
-
-      this.handleDBExceptions(error);
+    if (!propiedade) {
+      throw new NotFoundException(`Propiedad con id ${id} no encontrada`);
     }
+
+    if (!propiedade.user) {
+      console.log(propiedade.user)
+      throw new ForbiddenException('La propiedad no tiene un usuario asociado.');
   }
+
+    if (propiedade.user.id !== user.id && !user.roles.includes(ValidRoles.ADMIN)) {
+      throw new ForbiddenException('No tienes permisos para actualizar esta propiedad');
+    }
+
+  if (imagen) {
+      // Actualizar la imagen si está presente
+      const propiedadImage = this.propiedadeImageRepository.create({ url: imagen });
+      propiedade.imagen = propiedadImage;
+  }
+
+  Object.assign(propiedade, toUpdate);
+
+  await this.propiedadesRepository.save(propiedade);
+
+  return this.findOnePlain(id);
+}
 
   async remove(id: string) {
     const propiedade = await this.findOne(id);

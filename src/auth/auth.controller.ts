@@ -1,26 +1,29 @@
 import { Controller, Get, Post, Body, UseGuards, Req, SetMetadata } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
+import { Auth, GetRawHeaders, GetUser } from './decorators';
 import { LoginUserDto, CreateUserDto } from './dto/index';
 import { AuthService } from './auth.service';
 import { User } from './entities/user.entity';
-import { Auth, GetRawHeaders, GetUser } from './decorators';
-import { IncomingHttpHeaders } from 'http';
-import * as request from 'supertest';
 import { UserRoleGuard } from './guards/user-role/user-role.guard';
-import { RoleProtected } from './decorators/role-protected.decorator';
 import { ValidRoles } from './interfaces';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
+  @ApiResponse({status: 201, description: 'json con los datos del usuario creado', type: User})
+  @ApiResponse({status: 400, description: 'Bad Request'})
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.authService.create(createUserDto);
   }
 
   @Post('login')
+  @ApiResponse({status: 201, description: 'json con id, email, contraseña cifrada y token', type: User})
+  @ApiResponse({status: 400, description: 'Bad Request'})
   loginUser(@Body() loginUserDto: LoginUserDto) {
     return this.authService.login(loginUserDto);
   }

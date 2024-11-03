@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Propiedade } from "./index";
 
 @Entity()
@@ -15,5 +15,6 @@ export class PropiedadImage {
         (propiedade) => propiedade.imagen,
         { onDelete: 'CASCADE' }
     )
+    @JoinColumn({ name: 'propiedadId' })
     propiedad: Propiedade
 }

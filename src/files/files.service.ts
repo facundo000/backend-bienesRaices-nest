@@ -1,8 +1,8 @@
 import { join } from 'path';
-import { existsSync } from 'fs';
+import { existsSync, writeFileSync } from 'fs';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PropiedadImage } from 'src/propiedades/entities';
+import { Propiedade, PropiedadImage } from 'src/propiedades/entities';
 import { Repository } from 'typeorm';
 @Injectable()
 export class FilesService {
@@ -13,15 +13,14 @@ export class FilesService {
 
     getStaticImage(imageName: string) {
         const path = join(__dirname, '../../static/propiedades', imageName);
-        if( !existsSync(path) ) throw new BadRequestException(`No propiedad found with ${ imageName }`);
+        if( !existsSync(path) ) throw new BadRequestException(`No image found with ${ imageName }`);
 
         return path;
     }
-    //
     async savePropiedadImage(propiedadImage: PropiedadImage) {
         await this.imageRepository.save( propiedadImage );
     }
-    //
+
     async getPropiedadesImages(): Promise<string[]> {
         const images = await this.imageRepository.find();
         

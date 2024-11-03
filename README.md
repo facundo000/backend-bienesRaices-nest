@@ -20,3 +20,8 @@ npm run start:dev
 ```
 http://localhost:3000/api/v1/seed
 ```
+
+## Documentacion de API
+```
+http://localhost:3000/api
+```
