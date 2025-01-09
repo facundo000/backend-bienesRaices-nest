@@ -50,12 +50,24 @@ export class SeedService {
   private async insertNewPropiedades(user: User) {
     await this.propiedadesService.deleteAllPropiedades(); 
 
-    const propiedade = initialData.Propiedade;
+    const propiedades = initialData.Propiedade;
+    const users = await this.userRepository.find();
+
+
+    const adminUser = users.find(u => u.roles.includes('admin'));
+    const nonAdminUsers = users.filter(u => !u.roles.includes('admin'));
 
     const insertPromises = [];
 
-    propiedade.forEach( propiedad => {
-      insertPromises.push( this.propiedadesService.create( propiedad, user ) );
+    // propiedade.forEach( propiedad => {
+    //   insertPromises.push( this.propiedadesService.create( propiedad, user ) );
+    // });
+    propiedades.forEach((propiedad, index) => {
+      let usuarioAsociado = adminUser;
+      if (index >= propiedades.length - 3) {
+        usuarioAsociado = nonAdminUsers[Math.floor(Math.random() * nonAdminUsers.length)];
+      }
+      insertPromises.push(this.propiedadesService.create(propiedad, usuarioAsociado));
     });
     
     await Promise.all( insertPromises );

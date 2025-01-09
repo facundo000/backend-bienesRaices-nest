@@ -47,7 +47,7 @@ export class PropiedadesController {
   update(
     @Param('id') id: string, 
     @Body() updatePropiedadeDto: UpdatePropiedadeDto,
-    @GetUser() user: User,
+    @GetUser() user: User
   ) {
     return this.propiedadesService.update(id, updatePropiedadeDto, user);
   }

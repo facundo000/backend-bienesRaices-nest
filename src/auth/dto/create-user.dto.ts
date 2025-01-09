@@ -15,7 +15,7 @@ export class CreateUserDto {
 
     @ApiProperty({
         example: 'Adf555',
-        description: 'Contrasenia del usuario',
+        description: 'Contraseña del usuario',
         nullable: false
     })
     @IsString()

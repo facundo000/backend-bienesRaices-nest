@@ -60,11 +60,11 @@ export class AuthService {
     }
 
     if(!bcrypt.compareSync(contrasenia, user.contrasenia)){
-      throw new UnauthorizedException('Credenciales no validas - contraseñia');
+      throw new UnauthorizedException('Credenciales no validas - contraseña');
     }
-
+    
     return {
-      ...user,
+      user: user,
       token: this.getJwtToken({ id: user.id })
     }
   }
