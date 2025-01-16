@@ -11,7 +11,7 @@ import { AuthModule } from 'src/auth/auth.module';
   providers: [PropiedadesService],
   imports: [
     TypeOrmModule.forFeature([ Propiedade, PropiedadImage ]),
-    AuthModule
+    AuthModule,    
   ],
   exports: [
     PropiedadesService,

@@ -26,4 +26,16 @@ export class FilesService {
         
         return images.map( img => img.url );        
     }
+
+    async deleteAllImages() {
+        const query = this.imageRepository.createQueryBuilder('img');
+        try {
+            return await query
+            .delete()
+            .where({})
+            .execute();
+          } catch(error) {
+            (error);
+          }
+    }
 }

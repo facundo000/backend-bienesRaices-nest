@@ -72,7 +72,7 @@ export class AuthService {
 async checkAuthStatus( user: User ) {
   
   return {
-    ...user,
+    user: user,
     token: this.getJwtToken({ id: user.id }),
   }
 }

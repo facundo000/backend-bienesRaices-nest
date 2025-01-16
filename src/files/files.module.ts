@@ -17,5 +17,9 @@ import { PropiedadesModule } from '../propiedades/propiedades.module';
     AuthModule,
     PropiedadesModule
   ],
+  exports: [
+    FilesService,
+    TypeOrmModule,
+  ]
 })
 export class FilesModule {}

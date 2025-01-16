@@ -4,15 +4,18 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PropiedadesService } from 'src/propiedades/propiedades.service';
 import { initialData } from './data/seed-data';
 import { User } from 'src/auth/entities/user.entity';
+import { FilesService } from 'src/files/files.service';
 
 @Injectable()
 export class SeedService {
 
   constructor(
     private readonly propiedadesService: PropiedadesService,
+    private readonly filesService: FilesService,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
+  
   async executeSeed() {
 
     await this.deleteAllTables();
@@ -24,7 +27,7 @@ export class SeedService {
 
   private async deleteAllTables() {
     await this.propiedadesService.deleteAllPropiedades();
-
+    await this.filesService.deleteAllImages();
     const queryBuilder = this.userRepository.createQueryBuilder();
     await queryBuilder
     .delete()
@@ -54,20 +57,16 @@ export class SeedService {
     const users = await this.userRepository.find();
 
 
-    const adminUser = users.find(u => u.roles.includes('admin'));
-    const nonAdminUsers = users.filter(u => !u.roles.includes('admin'));
+    const regularUser = users.find(u => u.roles.includes('user'));
 
     const insertPromises = [];
 
     // propiedade.forEach( propiedad => {
     //   insertPromises.push( this.propiedadesService.create( propiedad, user ) );
     // });
-    propiedades.forEach((propiedad, index) => {
-      let usuarioAsociado = adminUser;
-      if (index >= propiedades.length - 3) {
-        usuarioAsociado = nonAdminUsers[Math.floor(Math.random() * nonAdminUsers.length)];
-      }
-      insertPromises.push(this.propiedadesService.create(propiedad, usuarioAsociado));
+    propiedades.forEach((propiedad) => {
+
+      insertPromises.push(this.propiedadesService.create(propiedad, regularUser));
     });
     
     await Promise.all( insertPromises );
