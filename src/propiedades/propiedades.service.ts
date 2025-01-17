@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { DataSource, Repository } from 'typeorm';
 import { isUUID } from 'class-validator';
+import { join } from 'path';
+import { existsSync, unlinkSync } from 'fs';
 
 import { CreatePropiedadeDto } from './dto/create-propiedade.dto';
 import { UpdatePropiedadeDto } from './dto/update-propiedade.dto';
@@ -95,7 +97,7 @@ export class PropiedadesService {
 
     const propiedade = await this.propiedadesRepository.findOne({
       where: { id },
-      relations: ['user'],
+      relations: ['user', 'imagen'],
     });
 
     if (!propiedade) {
@@ -103,32 +105,58 @@ export class PropiedadesService {
     }
 
     if (!propiedade.user) {
-      console.log(propiedade.user)
       throw new ForbiddenException('La propiedad no tiene un usuario asociado.');
-  }
+    }
 
     if (propiedade.user.id !== user.id && !user.roles.includes(ValidRoles.ADMIN)) {
       throw new ForbiddenException('No tienes permisos para actualizar esta propiedad');
     }
 
-  if (imagen) {
-      // Actualizar la imagen si está presente
+    if (imagen) {
+      if (propiedade.imagen) {
+        const oldImageName = propiedade.imagen.url.split('/').pop();
+        const oldImagePath = join(__dirname, '../../static/propiedades', oldImageName);
+        if (existsSync(oldImagePath)) {
+          unlinkSync(oldImagePath);
+        }
+        await this.propiedadeImageRepository.remove(propiedade.imagen);
+      }
+
       const propiedadImage = this.propiedadeImageRepository.create({ url: imagen });
+      await this.propiedadeImageRepository.save(propiedadImage);
       propiedade.imagen = propiedadImage;
+    }
+
+    Object.assign(propiedade, toUpdate);
+    await this.propiedadesRepository.save(propiedade);
+
+    return this.findOnePlain(id);
   }
 
-  Object.assign(propiedade, toUpdate);
-
-  await this.propiedadesRepository.save(propiedade);
-
-  return this.findOnePlain(id);
-}
-
   async remove(id: string) {
-    const propiedade = await this.findOne(id);
+    const propiedade = await this.propiedadesRepository.findOne({
+      where: { id },
+      relations: ['imagen']
+    });
+
+    if (!propiedade) {
+      throw new NotFoundException(`Propiedad con id ${id} no encontrada`);
+    }
+
+    if (propiedade.imagen) {
+      const imageName = propiedade.imagen.url.split('/').pop();
+      const path = join(__dirname, '../../static/propiedades', imageName);
+
+      if (existsSync(path)) {
+        unlinkSync(path);
+      }
+
+      await this.propiedadeImageRepository.remove(propiedade.imagen);
+    }
+
     await this.propiedadesRepository.remove(propiedade);
 
-    return {eliminado: true};
+    return { eliminado: true };
   }
 
   private handleDBExceptions(error: any) {

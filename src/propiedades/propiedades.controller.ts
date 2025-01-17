@@ -52,7 +52,7 @@ export class PropiedadesController {
   }
 
   @Delete(':id')
-  @Auth(ValidRoles.ADMIN)
+  @Auth(ValidRoles.USER)
   @ApiResponse({status: 200, description: '{eliminado: true}'})
 
   remove(@Param('id') id: string) {

@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { diskStorage } from 'multer';
 
-import { BadRequestException, Body, Controller, Get, Param, Post, Req, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Post, Req, Res, UploadedFile, UseInterceptors, Delete } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -76,5 +76,19 @@ export class FilesController {
     return {
       secureUrl
     };
+  }
+
+  @Delete('propiedad/:id')
+  @Auth(ValidRoles.ADMIN)
+  async deleteImage(
+    @Param('id') id: string
+  ) {
+    return await this.filesService.deleteImageById(id);
+  }
+
+  @Get('propiedades/img')
+  @Auth(ValidRoles.ADMIN)
+  async deleteOrphanImages() {
+    return await this.filesService.getPropiedadesImages();
   }
 }
