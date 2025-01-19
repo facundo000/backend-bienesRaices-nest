@@ -13,9 +13,9 @@ export class SeedController {
   ) {}
 
   @Get()
-  @Auth(ValidRoles.ADMIN)
-  @ApiResponse({status: 201, description: 'Seed executed'})
   // @Auth(ValidRoles.ADMIN)
+  @Auth(ValidRoles.USER)
+  @ApiResponse({status: 201, description: 'Seed executed'})
   executeSeed() {
     return this.seedService.executeSeed();
   }

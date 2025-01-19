@@ -79,7 +79,8 @@ export class FilesController {
   }
 
   @Delete('propiedad/:id')
-  @Auth(ValidRoles.ADMIN)
+  @Auth(ValidRoles.USER)
+  // @Auth(ValidRoles.ADMIN)
   async deleteImage(
     @Param('id') id: string
   ) {

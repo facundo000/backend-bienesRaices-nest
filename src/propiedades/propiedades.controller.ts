@@ -54,7 +54,6 @@ export class PropiedadesController {
   @Delete(':id')
   @Auth(ValidRoles.USER)
   @ApiResponse({status: 200, description: '{eliminado: true}'})
-
   remove(@Param('id') id: string) {
     return this.propiedadesService.remove(id);
   }

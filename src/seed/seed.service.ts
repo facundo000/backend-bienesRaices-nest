@@ -5,6 +5,8 @@ import { PropiedadesService } from 'src/propiedades/propiedades.service';
 import { initialData } from './data/seed-data';
 import { User } from 'src/auth/entities/user.entity';
 import { FilesService } from 'src/files/files.service';
+import { join } from 'path';
+import { existsSync, readdirSync, unlinkSync, mkdirSync, copyFileSync } from 'fs';
 
 @Injectable()
 export class SeedService {
@@ -17,8 +19,8 @@ export class SeedService {
   ) {}
   
   async executeSeed() {
-
     await this.deleteAllTables();
+    await this.cleanImageDirectory();
     const adminUser = await this.insertUsers();
     await this.insertNewPropiedades(adminUser);
 
@@ -72,5 +74,40 @@ export class SeedService {
     await Promise.all( insertPromises );
 
     return true;
+  }
+
+  private async cleanImageDirectory() {
+    const directoryPath = join(__dirname, '../../static/propiedades');
+    const backupDirectoryPath = join(__dirname, '../../static/backup');
+
+    // Si el directorio no existe, lo creamos
+    if (!existsSync(directoryPath)) {
+        mkdirSync(directoryPath, { recursive: true });
+    } else {
+        // Leer todos los archivos en el directorio
+        const files = readdirSync(directoryPath);
+
+        // Eliminar cada archivo
+        for (const file of files) {
+            const filePath = join(directoryPath, file);
+            try {
+                unlinkSync(filePath);
+            } catch (error) {
+                console.error(`Error al eliminar el archivo ${file}:`, error);
+            }
+        }
+    }
+
+    // Copiar las imágenes desde el directorio de respaldo
+    const backupFiles = readdirSync(backupDirectoryPath);
+    for (const file of backupFiles) {
+        const srcPath = join(backupDirectoryPath, file);
+        const destPath = join(directoryPath, file);
+        try {
+            copyFileSync(srcPath, destPath);
+        } catch (error) {
+            console.error(`Error al copiar el archivo ${file}:`, error);
+        }
+    }
   }
 }
