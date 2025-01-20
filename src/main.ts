@@ -29,13 +29,12 @@ async function bootstrap() {
       
    app.enableCors(
     {
-      "origin": "*",
+      "origin": `${process.env.DOMAIN_PAGE}` || "*",
       "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
       "preflightContinue": false,
       "optionsSuccessStatus": 204
     }
-   );
-   
+   );   
    await app.listen(process.env.PORT);
    logger.log(`App running on port ${ process.env.PORT }`)
 }
