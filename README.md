@@ -25,3 +25,8 @@ http://localhost:3000/api/v1/seed
 ```
 http://localhost:3000/api
 ```
+
+## Frontend
+```
+https://github.com/facundo000/bines-raices-angular-php/tree/nueva-rama
+```
