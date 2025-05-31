@@ -72,5 +72,5 @@ export class CreatePropiedadeDto {
     @IsString({ each: true })
     @IsArray()
     @IsOptional()
-    imagen?: string;
+    imagen?: string[];
 }

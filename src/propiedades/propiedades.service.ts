@@ -33,17 +33,17 @@ export class PropiedadesService {
     try {
       const { imagen, ...propiedades } = createPropiedadeDto;
 
-    let propiedadImage: PropiedadImage | undefined;
-    if (imagen) {
-      propiedadImage = this.propiedadeImageRepository.create({ url: imagen });
-      await this.propiedadeImageRepository.save(propiedadImage);
-    }
+      let propiedadImage: PropiedadImage | undefined;
+      if (imagen) {
+        propiedadImage = this.propiedadeImageRepository.create({ url: imagen[0] });
+        await this.propiedadeImageRepository.save(propiedadImage);
+      }
 
-    const propiedade = this.propiedadesRepository.create({
-      ...propiedades,
-      imagen: propiedadImage, // Asignar la imagen creada
-      user,
-    });
+      const propiedade = this.propiedadesRepository.create({
+        ...propiedades,
+        imagen: propiedadImage,
+        user,
+      });
       await this.propiedadesRepository.save(propiedade);
       
       return {...propiedade, imagen};
@@ -122,7 +122,7 @@ export class PropiedadesService {
         await this.propiedadeImageRepository.remove(propiedade.imagen);
       }
 
-      const propiedadImage = this.propiedadeImageRepository.create({ url: imagen });
+      const propiedadImage = this.propiedadeImageRepository.create({ url: imagen[0] });
       await this.propiedadeImageRepository.save(propiedadImage);
       propiedade.imagen = propiedadImage;
     }

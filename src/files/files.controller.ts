@@ -68,11 +68,6 @@ export class FilesController {
 
     const secureUrl = `${ this.configService.get('HOST_API') }/files/propiedad/${ file.filename }`;
 
-    const propiedadImage = new PropiedadImage();
-    propiedadImage.url = secureUrl;
-
-    await this.filesService.savePropiedadImage(propiedadImage);
-
     return {
       secureUrl
     };

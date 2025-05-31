@@ -10,7 +10,7 @@ export class PropiedadImage {
     @Column('text')
     url: string;
 
-    @OneToOne(
+    @ManyToOne(
         () => Propiedade,
         (propiedade) => propiedade.imagen,
         { onDelete: 'CASCADE' }

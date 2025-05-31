@@ -79,9 +79,9 @@ export class Propiedade {
     
     @ApiProperty({
         nullable: true,
-        description: 'Unica Imagen de la propiedad'
+        description: 'Varias imagenes de la propiedad'
     })
-    @OneToOne(
+    @OneToMany(
         () => PropiedadImage,
         (propiedadImage) => propiedadImage.propiedad,
         { 

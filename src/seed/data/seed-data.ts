@@ -6,7 +6,7 @@ interface SeedPropiedades {
     habitaciones:  number;
     banio: number;
     estacionamiento: number;
-    imagen: string;
+    imagen: string[];
     precio: number;
     slug: string;
     titulo: string;
@@ -19,6 +19,7 @@ interface SeedUser {
     apellido:     string;
     telefono:     string;
     roles:        string[];
+    esActivo: boolean;
 }
 interface SeedData {
     users : SeedUser[];
@@ -34,13 +35,14 @@ export const initialData: SeedData = {
             nombre: "Test",
             apellido: "2",
             telefono: "1234567891",
-            roles: ['user']
+            roles: ['user'],
+            esActivo: true
         },
     ],
     Propiedade: [
         {
             descripcion: "Apartamento moderno en el centro de la ciudad con todas las comodidades",
-            imagen:"anuncio2.jpg",
+            imagen: ["static/propiedades/anuncio2.jpg"],
             habitaciones: 3,
             banio: 2,
             estacionamiento: 2,
@@ -50,7 +52,7 @@ export const initialData: SeedData = {
         },
         {
             descripcion: "Departamento de lujo en el corazón de la ciudad con acceso a gimnasio y spa",
-            imagen:"anuncio3.jpg",
+            imagen: ["static/propiedades/anuncio3.jpg"],
             habitaciones: 3,
             banio: 2,
             estacionamiento: 1,
@@ -60,7 +62,7 @@ export const initialData: SeedData = {
         },
         {
             descripcion: "Construcción moderna con un diseño que combina elementos rústicos y elegantes",
-            imagen: "anuncio6.jpg",
+            imagen: ["static/propiedades/anuncio6.jpg"],
             habitaciones: 2,
             banio: 1,
             estacionamiento: 1,
@@ -70,7 +72,7 @@ export const initialData: SeedData = {
         },
         {
             descripcion: "Apartamento moderno en el centro de la ciudad con todas las comodidades",
-            imagen: "blog4.jpg",
+            imagen: ["static/propiedades/blog4.jpg"],
             habitaciones: 3,
             banio: 2,
             estacionamiento: 2,
@@ -80,7 +82,7 @@ export const initialData: SeedData = {
         },
         {
             descripcion: "Casa de campo con amplia zona verde y acceso a piscina comunal",
-            imagen: "blog3.jpg",
+            imagen: ["static/propiedades/blog3.jpg"],
             habitaciones: 4,
             banio: 2,
             estacionamiento: 2,
@@ -90,7 +92,7 @@ export const initialData: SeedData = {
         },
         {
             descripcion: "Departamento moderno en el corazón de la ciudad con acceso a gimnasio y spa",
-            imagen: "blog2.jpg",
+            imagen: ["static/propiedades/blog2.jpg"],
             habitaciones: 3,
             banio: 2,
             estacionamiento: 1,
@@ -100,7 +102,7 @@ export const initialData: SeedData = {
         },
         {
             descripcion: "Casa en el lago con excelente vista, acabados de lujo a un excelente precio",
-            imagen: "blog1.jpg",
+            imagen: ["static/propiedades/blog1.jpg"],
             habitaciones: 2,
             banio: 1,
             estacionamiento: 1,

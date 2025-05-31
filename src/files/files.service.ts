@@ -17,6 +17,7 @@ export class FilesService {
 
         return path;
     }
+    
     async savePropiedadImage(propiedadImage: PropiedadImage) {
         await this.imageRepository.save( propiedadImage );
     }
