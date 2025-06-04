@@ -89,7 +89,7 @@ export class Propiedade {
             eager: true
         }
     )
-    imagen?: PropiedadImage;
+    imagen?: PropiedadImage[];
 
     @ManyToOne(
         () => User,

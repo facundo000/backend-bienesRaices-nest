@@ -77,7 +77,7 @@ export class User {
         () => Propiedade,
         (propiedade) => propiedade.user
     )
-    propiedad: Propiedade;
+    propiedad: Propiedade[];
 
     @BeforeInsert()
     checkFieldsBeforeInsert() {
