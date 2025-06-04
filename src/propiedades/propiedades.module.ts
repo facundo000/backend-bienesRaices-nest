@@ -5,10 +5,11 @@ import { PropiedadesService } from './propiedades.service';
 import { PropiedadesController } from './propiedades.controller';
 import { Propiedade, PropiedadImage } from './entities/index';
 import { AuthModule } from 'src/auth/auth.module';
+import { PropertyOwnerGuard } from './guards/property-owner.guard';
 
 @Module({
   controllers: [PropiedadesController],
-  providers: [PropiedadesService],
+  providers: [PropiedadesService, PropertyOwnerGuard],
   imports: [
     TypeOrmModule.forFeature([ Propiedade, PropiedadImage ]),
     AuthModule,    

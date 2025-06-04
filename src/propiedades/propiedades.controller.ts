@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { PropiedadesService } from './propiedades.service';
@@ -8,6 +8,7 @@ import { Auth, GetUser } from 'src/auth/decorators';
 import { ValidRoles } from 'src/auth/interfaces';
 import { User } from 'src/auth/entities/user.entity';
 import { Propiedade } from './entities';
+import { PropertyOwnerGuard } from './guards/property-owner.guard';
 
 
 @ApiTags('Propiedades')
@@ -28,9 +29,23 @@ export class PropiedadesController {
   }
 
   @Get()
-  @ApiResponse({status: 200, description: 'Propiedades encontradas', type: [Propiedade]})
+  @ApiResponse({status: 200, description: 'Catálogo público de Propiedades', type: [Propiedade]})
   findAll() {
     return this.propiedadesService.findAll();
+  }
+
+  @Get('mis-propiedades')
+  @Auth(ValidRoles.USER)
+  @ApiResponse({status: 200, description: 'Propiedades del usuario autenticado', type: [Propiedade]})
+  findMyProperties(@GetUser() user: User) {
+    return this.propiedadesService.findByUser(user.id);
+  }
+
+  @Get('admin/todas')
+  @Auth(ValidRoles.ADMIN)
+  @ApiResponse({status: 200, description: 'Todas las propiedades (Admin)', type: [Propiedade]})
+  findAllForAdmin() {
+    return this.propiedadesService.findAllForAdmin();
   }
 
   @Get(':id')
@@ -40,6 +55,7 @@ export class PropiedadesController {
   }
 
   @Patch(':id')
+  @UseGuards(PropertyOwnerGuard)
   @Auth(ValidRoles.USER)
   @ApiResponse({status: 200, description: 'Propiedad actualizada correctamente', type: Propiedade})
   @ApiResponse({status: 403, description: 'No tienes permisos para actualizar esta propiedad'})
@@ -52,9 +68,14 @@ export class PropiedadesController {
   }
 
   @Delete(':id')
+  @UseGuards(PropertyOwnerGuard)
   @Auth(ValidRoles.USER)
   @ApiResponse({status: 200, description: '{eliminado: true}'})
-  remove(@Param('id') id: string) {
-    return this.propiedadesService.remove(id);
+  @ApiResponse({status: 403, description: 'No tienes permisos para eliminar esta propiedad'})
+  remove(
+    @Param('id') id: string,
+    @GetUser() user: User
+  ) {
+    return this.propiedadesService.remove(id, user);
   }
 }

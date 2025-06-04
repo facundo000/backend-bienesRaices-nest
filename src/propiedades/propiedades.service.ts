@@ -86,6 +86,24 @@ export class PropiedadesService {
     return propiedade;
   }
 
+  async findByUser(userId: string) {
+    return this.propiedadesRepository.find({
+      where: { user: { id: userId } },
+      relations: {
+        imagen: true,
+      }
+    });
+  }
+
+  async findAllForAdmin() {
+    return this.propiedadesRepository.find({
+      relations: {
+        imagen: true,
+        user: true,
+      }
+    });
+  }
+
   async findOnePlain(id: string) {
     const { imagen, ...rest } = await this.findOne(id);
 
@@ -144,10 +162,10 @@ export class PropiedadesService {
     return this.findOnePlain(id);
   }
 
-  async remove(id: string) {
+  async remove(id: string, user: User) {
     const propiedade = await this.propiedadesRepository.findOne({
       where: { id },
-      relations: ['imagen']
+      relations: ['imagen', 'user']
     });
 
     if (!propiedade) {
