@@ -56,7 +56,7 @@ export class PropiedadesController {
 
   @Patch(':id')
   @UseGuards(PropertyOwnerGuard)
-  @Auth(ValidRoles.USER)
+  @Auth(ValidRoles.USER, ValidRoles.ADMIN)
   @ApiResponse({status: 200, description: 'Propiedad actualizada correctamente', type: Propiedade})
   @ApiResponse({status: 403, description: 'No tienes permisos para actualizar esta propiedad'})
   update(
@@ -69,7 +69,7 @@ export class PropiedadesController {
 
   @Delete(':id')
   @UseGuards(PropertyOwnerGuard)
-  @Auth(ValidRoles.USER)
+  @Auth(ValidRoles.USER, ValidRoles.ADMIN)
   @ApiResponse({status: 200, description: '{eliminado: true}'})
   @ApiResponse({status: 403, description: 'No tienes permisos para eliminar esta propiedad'})
   remove(
